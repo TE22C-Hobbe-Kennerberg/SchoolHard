@@ -1,10 +1,4 @@
-public abstract class Database {
-    public enum KeyType{
+public class Database {
 
-    }
-    public enum EntryType{
-
-    }
-    private class MyClass {}
 }
 

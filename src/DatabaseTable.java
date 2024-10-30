@@ -1,5 +1,4 @@
-public class DatabaseTable {
-    private String tableName;
+public class DatabaseTable<Key, Value> {
 
 
 }
