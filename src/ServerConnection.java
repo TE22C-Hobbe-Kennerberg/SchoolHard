@@ -17,16 +17,22 @@ public class ServerConnection {
         return instance;
     }
 
-    public void connect() throws IOException {
-        Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    public void connect(){
+        try{
+            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        String response = reader.readLine();
+            String response = reader.readLine();
 
-        System.out.println(response);
+            System.out.println(response);
 
-        socket.close();
-        System.exit(0);
+            socket.close();
+        }
+        catch(IOException e){
+            System.out.println("Could not connect to server. Please restart the program.");
+            System.exit(0);
+        }
+
     }
 
     //public void query<>("")

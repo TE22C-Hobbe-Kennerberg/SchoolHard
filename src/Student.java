@@ -1,10 +1,20 @@
+import org.json.JSONObject;
 
-
-public abstract class Student extends Person {
+public class Student extends Person {
+    int startYear;
     public Student(String firstName, String lastName, int startYear){
         this.firstName = firstName;
         this.lastName = lastName;
-        // Creates a universally unique ID for each student to later be used in dictionary.
+        this.startYear = startYear;
+    }
 
+    @Override public JSONObject serialize(){
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("firstName", firstName);
+        jsonObject.put("lastName", lastName);
+        jsonObject.put("startYear", startYear);
+
+        return jsonObject;
     }
 }

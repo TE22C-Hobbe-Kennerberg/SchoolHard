@@ -23,7 +23,7 @@ public class Server {
 
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             out.println("Random number: " + random.nextInt(0, 101));
-             System.out.println("Sent data.");
+            System.out.println("Sent data.");
 
             client.close();
             listener.close();

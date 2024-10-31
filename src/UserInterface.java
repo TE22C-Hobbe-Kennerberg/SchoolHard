@@ -21,12 +21,8 @@ public final class UserInterface {
         //System.out.println(choice);
 
         ServerConnection db = ServerConnection.getInstance();
-        try{
-            db.connect();
-        }
-        catch (IOException e){
-            System.out.println("Bad connection.");
-        }
+        db.connect();
+
     }
     private void LoginMenu(){
 
