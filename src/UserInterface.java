@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 public final class UserInterface {
@@ -16,14 +17,22 @@ public final class UserInterface {
         startMenu();
     }
     private void startMenu(){
-        int choice = button("Class", "Add member", "Remove member", "Delete Class");
-        System.out.println(choice);
+        //int choice = button("Class", "Add member", "Remove member", "Delete Class");
+        //System.out.println(choice);
+
+        ServerConnection db = ServerConnection.getInstance();
+        try{
+            db.connect();
+        }
+        catch (IOException e){
+            System.out.println("Bad connection.");
+        }
     }
     private void LoginMenu(){
 
     }
 
-    // Returns an integer based on a question and a set of alternatives.
+    // Returns an integer based on a question and the users selection of alternatives.
     private int button(String question, String ... options) {
         // Loops until question has been answered properly
         do {
@@ -45,11 +54,12 @@ public final class UserInterface {
                 int option = Integer.parseInt(input);
                 if(option < 1 || option > options.length) throw new Exception("Number not in range");
                 return option;
-            } catch (NumberFormatException e) {
+            }catch (NumberFormatException e) {
+                // If it's not a number.
                 clearConsole();
                 System.out.println("Please enter a valid alternative.");
-            }
-            catch (Exception e){
+            }catch (Exception e){
+                // If the number is outside the valid range.
                 clearConsole();
                 System.out.println("Alternative does not exist.");
             }
