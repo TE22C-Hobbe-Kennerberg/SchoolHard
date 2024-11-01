@@ -1,4 +1,4 @@
-import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.Scanner;
 
 public final class UserInterface {
@@ -17,28 +17,43 @@ public final class UserInterface {
         startMenu();
     }
     private void startMenu(){
-        //int choice = button("Class", "Add member", "Remove member", "Delete Class");
+        int choice = userInput("Welcome!", "Login", "Register");
         //System.out.println(choice);
-
-        ServerConnection db = ServerConnection.getInstance();
-        db.connect();
+        switch (choice){
+            case 1:
+                loginMenu();
+                break;
+            case 2:
+                registerMenu();
+                break;
+        }
+    }
+    private void loginMenu(){
 
     }
-    private void LoginMenu(){
+    private void registerMenu(){
+        String username = userInput("Choose a username: ").toLowerCase();
+
+        // Add username validation.
+        System.out.println("Username: " + username);
+
+        // Add password validation.
+        String rawPassword = userInput("Choose a password: ");
 
     }
 
-    // Returns an integer based on a question and the users selection of alternatives.
-    private int button(String question, String ... options) {
-        // Loops until question has been answered properly
+
+    // Returns an integer based on a prompt and the users selection of alternatives.
+    private int userInput(String prompt, String ... options) {
+        // Loops until prompt has been answered properly
         do {
-            // Prints question + options.
-            System.out.println(question);
+            // Prints prompt + options.
+            System.out.println(prompt);
             for (int i = 0; i < options.length; i++) {
                 System.out.println(i + 1 + "." + options[i]);
             }
-            System.out.println();
 
+            System.out.println();
             // Gets user input.
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
@@ -60,6 +75,15 @@ public final class UserInterface {
                 System.out.println("Alternative does not exist.");
             }
         } while (true);
+    }
+    // Returns a string based on a prompt given to the user.
+    private String userInput(String prompt){
+        System.out.println(prompt);
+
+        // Gets user input.
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        return input;
     }
 
     // Clears console using newline character.

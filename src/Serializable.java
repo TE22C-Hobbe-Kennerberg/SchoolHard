@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.json.JSONObject;
 
 // Class for everything that is supposed to be stored in the database.
-public abstract class DatabaseEntry {
+public abstract class Serializable {
     // Creates an uuid for each entry in the database so each entry can be identified.
     public final UUID uuid = UUID.randomUUID();
 

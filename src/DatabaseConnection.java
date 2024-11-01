@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class DatabaseConnection {
-    public class Query<T extends  DatabaseEntry> {
+    public class Query<T extends Serializable> {
         private ArrayList<T> result;
 
         public ArrayList<T> find(Class<T> type, String... keyword) {

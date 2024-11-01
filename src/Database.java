@@ -37,7 +37,7 @@ public class Database {
 
 
     // Stores multiple data entries of type T inside a JSON file.
-    protected class Table<T extends DatabaseEntry> {
+    protected class Table<T extends Serializable> {
         // The file containing all data stored in the table.
         private File file;
         private UUID uuid;
@@ -98,16 +98,6 @@ public class Database {
     }
 
     public void start() throws IOException{
-        Table<Student> table = new Table<Student>();
-
-        Student student = new Student("1", "1", 1);
-        Student student2 = new Student("2", "2", 2);
-        Student student3 = new Student("3", "3", 3);
-        //table.add(student);
-        //table.add(student2);
-        table.add(student3);
-        System.out.println(table.getTableArray().toString());
-
         JSONObject json = new JSONObject();
     }
 
