@@ -8,7 +8,7 @@ public class Student extends Person {
         this.startYear = startYear;
     }
 
-    @Override public JSONObject serialize(){
+    @Override protected JSONObject serialize(){
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put("firstName", firstName);

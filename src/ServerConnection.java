@@ -35,5 +35,9 @@ public class ServerConnection {
 
     }
 
+    public void SendQuery(){
+        
+    }
+
     //public void query<>("")
 }

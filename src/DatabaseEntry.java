@@ -10,11 +10,19 @@ public abstract class DatabaseEntry {
     public final UUID uuid = UUID.randomUUID();
 
     // Forces every child to implement a serialization method to send to database.
-    public abstract JSONObject serialize();
+    protected abstract JSONObject serialize();
+
+    // Returns a JSONObject with the key set as the uuid.
+    public final JSONObject getJSONObject(){
+        JSONObject data = serialize();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(uuid.toString(), data);
+        return jsonObject;
+    }
 
 
-    // Returns a file containing the current the value of variables that are serialized in the serialize function.
-    public File convertToJSON(){
+    // Returns a file containing the current value of variables that are serialized in the serialize function.
+    public File getJSONFile(){
         // Puts the UUID into the JSONObject.
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("UUID", uuid);
@@ -32,7 +40,6 @@ public abstract class DatabaseEntry {
 
             fileWriter.flush();
             fileWriter.close();
-
             return file;
         }
         catch (IOException e){

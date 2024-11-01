@@ -7,11 +7,13 @@ import java.util.Random;
 public class Server {
     private static final int PORT = 8989;
 
-    public static void main(String[] args) {
-        startDatabase();
+    public static void main(String[] args) throws  IOException{
+        //startServer();
+        Database db = Database.getInstance();
+        db.start();
     }
 
-    public static void startDatabase(){
+    public static void startServer(){
 
         Random random = new Random();
         try {

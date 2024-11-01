@@ -1,7 +1,7 @@
 public class Main {
     public static void main(String[] args) {
         Student student = new Student("Hobe", "Kneeburg", 2024);
-        student.convertToJSON();
+        student.getJSONFile();
         System.out.println(student.uuid.toString());
 
         //UserInterface ui = UserInterface.getInstance();
