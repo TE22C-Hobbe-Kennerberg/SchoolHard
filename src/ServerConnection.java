@@ -27,7 +27,6 @@ public class ServerConnection {
 
                 PrintWriter sender = new PrintWriter(socket.getOutputStream(), true);
                 sender.println(input);
-                System.out.println("Here");
                 if(input.equals("quit")){
                     break;
                 }
