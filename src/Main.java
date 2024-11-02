@@ -3,11 +3,8 @@ public class Main {
         //UserInterface ui = UserInterface.getInstance();
         //ui.startUI();
 
-        PasswordHelper pw = new PasswordHelper();
-        pw.getHash("hello");
-
-        //ServerConnection database = ServerConnection.getInstance();
-        //database.connect();
+        ServerConnection database = ServerConnection.getInstance();
+        database.connect();
 
     }
 }

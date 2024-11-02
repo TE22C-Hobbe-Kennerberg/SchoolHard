@@ -1,8 +1,8 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
+// A way of connecting to the server.
 public class ServerConnection {
     public static final String SERVER_IP = "127.0.0.1";
     public static final int SERVER_PORT = 8989;
@@ -20,11 +20,18 @@ public class ServerConnection {
     public void connect(){
         try{
             Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            String response = reader.readLine();
+            while(true){
+                Scanner scanner = new Scanner(System.in);
+                String input = scanner.nextLine();
 
-            System.out.println(response);
+                PrintWriter sender = new PrintWriter(socket.getOutputStream(), true);
+                sender.println(input);
+                System.out.println("Here");
+                if(input.equals("quit")){
+                    break;
+                }
+            }
 
             socket.close();
         }
@@ -35,9 +42,8 @@ public class ServerConnection {
 
     }
 
-    public void SendQuery(){
-        
+    public <T extends Serializable> void  sendData(T data) {
+        File file = data.getJSONFile();
+        System.out.println();
     }
-
-    //public void query<>("")
 }

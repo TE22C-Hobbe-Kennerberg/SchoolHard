@@ -1,16 +1,19 @@
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 
+
+// Receives and sends data to the client ServerConnection.
 public class Server {
     private static final int PORT = 8989;
 
     public static void main(String[] args) throws  IOException{
-        //startServer();
-        Database db = Database.getInstance();
-        db.start();
+        startServer();
+        //Database db = Database.getInstance();
+        //db.start();
     }
 
     public static void startServer(){
@@ -21,16 +24,15 @@ public class Server {
             ServerSocket listener = new ServerSocket(PORT);
 
             Socket client = listener.accept();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             System.out.println("Connected.");
-
-            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-            out.println("Random number: " + random.nextInt(0, 101));
-            System.out.println("Sent data.");
+            while(true){
+                String receivedData = reader.readLine();
+                if(receivedData.equals("exit")) break;
+            }
 
             client.close();
             listener.close();
-            System.out.println("Closed connection.");
-
         }
         catch (IOException e){
             System.out.println("Could not open stream");
@@ -38,6 +40,17 @@ public class Server {
         }
     }
 
+    private class IncomingConnectionHandler{
+
+
+
+        private class Connection implements Runnable{
+            @Override
+            public void run() {
+
+            }
+        }
+    }
 
 }
 

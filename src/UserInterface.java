@@ -34,12 +34,22 @@ public final class UserInterface {
     private void registerMenu(){
         String username = userInput("Choose a username: ").toLowerCase();
 
-        // Add username validation.
+        // Add username validation. (Check if it already exists).
         System.out.println("Username: " + username);
 
-        // Add password validation.
+        // Add password validation. (Repeat the same password twice.)
         String rawPassword = userInput("Choose a password: ");
+        PasswordHelper pw = new PasswordHelper();
+        String hashedPassword = pw.getHash(rawPassword);
 
+
+        // Uploads to database
+        DatabaseConnection db = new DatabaseConnection();
+        db.createUser();
+
+
+        // Redirects to log-in menu.
+        loginMenu();
     }
 
 

@@ -12,6 +12,7 @@ public class PasswordHelper {
             // Convert bytes to string.
             StringBuilder sb = new StringBuilder();
             for(byte b : hash){
+                // 0 padding, width of 2, hexadecimal.
                 sb.append(String.format("%02X", b));
             }
             System.out.println(sb.toString().toLowerCase());

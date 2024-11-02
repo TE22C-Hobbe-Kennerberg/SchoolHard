@@ -1,11 +1,10 @@
 import java.util.ArrayList;
 
 public class DatabaseConnection {
-    public class Query<T extends Serializable> {
-        private ArrayList<T> result;
+    public void createUser() {
+        ServerConnection server = ServerConnection.getInstance();
+        User user = new User("Test", "Test");
+        server.sendData(user);
 
-        public ArrayList<T> find(Class<T> type, String... keyword) {
-            return null;
-        }
     }
 }
