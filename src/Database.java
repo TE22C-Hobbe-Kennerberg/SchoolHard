@@ -3,6 +3,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.UUID;
@@ -21,19 +22,40 @@ public class Database {
         return instance;
     }
 
-    private HashMap<String, Table> tables = new HashMap<String, Table>();
+    private HashMap<String, HashMap<UUID, Table<? extends Serializable>>>
+    private HashMap<UUID, Table<? extends  Serializable>> tables = new HashMap<>();
 
-    public void createTable(){
 
+
+    // Gets all the tables storing the correct type and also contains the ALL keywords.
+    public JSONArray getTable(String schema, String ... keywords){
+        File[] files = new File(path).listFiles();
+
+        // Returns empty array if there are no files.
+        if(files == null) return new JSONArray();
+
+        // Loops through all the files.
+        // Checks for type first, if it matches it looks for keywords
+        JSONArray j = new JSONArray();
+        for (File f : files){
+
+        }
+        return new JSONArray();
     }
 
+    // Gets data from a file.
+    private JSONArray getData(File file){
+        return new JSONArray();
+    }
 
+    private JSONObject searchFile(String ... keywords){
+        return new JSONObject();
+    }
 
-
-
-
-
-
+    public <T extends Serializable> void createTable(String schema){
+        Table<T> table = new Table<T>(schema);
+        tables.put(table.uuid, table);
+    }
 
 
     // Stores multiple data entries of type T inside a JSON file.
@@ -42,16 +64,20 @@ public class Database {
         private File file;
         private UUID uuid;
 
-        public Table(){
+        // Fancy word for folder.
+        private String schema;
+        public Table(String schema){
             uuid = UUID.randomUUID();
 
             // REMOVE THIS
             uuid = UUID.fromString("08a20118-4735-4952-a94b-e8974f5c1515");
             try{
-                file = new File(path + uuid + fileType);
+                file = new File(path + type + "_" + uuid + fileType);
                 // If the file does not exist it creates a new empty file with the uuid as name.
                 if(!file.exists()){
                     FileWriter fileWriter = new FileWriter(file, true);
+                    // The first line will be the type that is stored inside the table.
+                    fileWriter
                     fileWriter.flush();
                     fileWriter.close();
                 }
@@ -60,7 +86,9 @@ public class Database {
             }
         }
 
-        private JSONArray getTableArray() throws IOException, SecurityException {
+
+        // Creates a JSONArray object with the corresponding data stored in the file.
+        private JSONArray retrieveData(){
             String fileString;
             JSONArray fileJSONArray;
             try {
@@ -68,38 +96,42 @@ public class Database {
                 fileJSONArray = new JSONArray(fileString);
                 return fileJSONArray;
             } catch (OutOfMemoryError outOfMemoryError) {
+                // If the file is > 2GB in size.
                 System.out.println("YOU ARE USING THIS PROGRAM TOO HARD PLEASE STOP");
+                return null;
+            }catch (Exception e){
+                // If there is nothing to retrieve.
                 return null;
             }
         }
 
+
         // Adds data to the JSON file. Uses JSONArray to be able to loop easier.
-        public void add(T data) throws IOException {
+        public <K> void add(K data) throws IOException {
             JSONArray combinedData = new JSONArray();
 
-            try{
-                // Loops through the current file and adds it to the new JSONArray.
-                JSONArray oldData = getTableArray();
+
+            // Loops through the tables file and adds old data it to the new JSONArray.
+            JSONArray oldData = retrieveData();
+            if(oldData != null){
                 for(int i = 0; i < oldData.length(); i++){
                     combinedData.put(oldData.get(i));
                 }
-            }catch (Exception e){
-                // Add something here??
             }
 
-            JSONObject newData = data.getJSONObject();
-            combinedData.put(newData);
-
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(combinedData.toString());
-            fileWriter.flush();
-            fileWriter.close();
+//            JSONObject newData = data.getJSONObject();
+//            combinedData.put(newData);
+//
+//            FileWriter fileWriter = new FileWriter(file);
+//            fileWriter.write(combinedData.toString());
+//            fileWriter.flush();
+//            fileWriter.close();
         }
+
+        private getOldData
     }
 
-    public void start() throws IOException{
-        JSONObject json = new JSONObject();
-    }
+
 
 
 }

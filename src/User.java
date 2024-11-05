@@ -9,6 +9,11 @@ public class User extends Serializable {
         this.password = password;
     }
 
+    @Override
+    protected Type forceSetType() {
+        return Type.USER;
+    }
+
     @Override protected JSONObject serialize(){
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
