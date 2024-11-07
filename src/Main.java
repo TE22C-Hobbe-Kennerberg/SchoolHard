@@ -1,17 +1,29 @@
-
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 
 
-        class Test<T>{
-
+        class Test{
+            int a = 1;
+            int b = 2;
         }
 
-        Test<String> t = new Test<>();
+        Test test = new Test();
+        try {
+            FileOutputStream fo = new FileOutputStream("./test.txt");
+            ObjectOutputStream oo = new ObjectOutputStream(fo);
+            oo.write(test.a);
 
-        System.out.printf(t.getClass().toString());
+            fo.close();
+            oo.close();
+        }catch (Exception e){
+            throw e;
+        }
+        FileInputStream fi = new FileInputStream("./test.txt");
+        ObjectInputStream oi = new ObjectInputStream(fi);
 
+        System.out.println(oi.readObject());
 
 
         //PasswordHelper pw = new PasswordHelper();
