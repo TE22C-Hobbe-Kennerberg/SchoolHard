@@ -41,8 +41,7 @@ public class ServerConnection {
 
     }
 
-    public <T extends Serializable> void  sendData(T data) {
-        File file = data.getJSONFile();
+    public <T> void  sendData(T data) {
         System.out.println();
     }
 }

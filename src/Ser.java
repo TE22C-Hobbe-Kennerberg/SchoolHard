@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 
 // Class for everything that is supposed to be stored in the database.
-public abstract class Serializable {
+public abstract class Ser {
 
     // What is being serialized so it can be identified by database.
     public enum Type{
@@ -23,7 +23,7 @@ public abstract class Serializable {
     protected abstract JSONObject serialize();
     public final Type type;
 
-    public Serializable(){
+    public Ser(){
         this.type = forceSetType();
     }
 

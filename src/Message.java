@@ -1,3 +1,3 @@
-public class Message {
+public class Message extends TableEntry{
 
 }

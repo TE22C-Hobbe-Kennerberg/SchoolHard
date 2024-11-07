@@ -12,12 +12,12 @@ public class ServerCommand {
 
     // Verifies password for a user, send true if it matches database.
     public boolean verifyPassword(String username, String password){
-        return db.getTable(username, password).length() > 0;
+        return db.getTable(username, password) != null;
     }
 
     // Gets chat between 2 users.
     public JSONArray getChat(String user1, String user2){
-        JSONArray data = db.getTable(user1, user2);
+        //JSONArray data = db.getTable(user1, user2);
         return new JSONArray();
     }
 

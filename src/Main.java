@@ -1,29 +1,22 @@
 import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws Exception{
 
-
-        class Test{
-            int a = 1;
-            int b = 2;
+        class Test implements Serializable{
+            public int a = 1;
+            public String b = "Hello!";
         }
 
         Test test = new Test();
-        try {
-            FileOutputStream fo = new FileOutputStream("./test.txt");
-            ObjectOutputStream oo = new ObjectOutputStream(fo);
-            oo.write(test.a);
 
-            fo.close();
-            oo.close();
-        }catch (Exception e){
-            throw e;
-        }
-        FileInputStream fi = new FileInputStream("./test.txt");
-        ObjectInputStream oi = new ObjectInputStream(fi);
+        Field[] fields = test.getClass().getFields();
+        System.out.println(Arrays.toString(fields));
+        Object a = fields[1].get(test);
 
-        System.out.println(oi.readObject());
+        System.out.println(a);
 
 
         //PasswordHelper pw = new PasswordHelper();
