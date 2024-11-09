@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,9 +16,15 @@ public class Server {
     public static void main(String[] args) throws  IOException{
         //startServer();
 
-        IncomingConnectionHandler test = IncomingConnectionHandler.getInstance();
-        test.allowConnection();
+        initiateDatabase();
+        //IncomingConnectionHandler test = IncomingConnectionHandler.getInstance();
+        //test.allowConnection();
 
+    }
+
+    private static void initiateDatabase(){
+        Database db = Database.getInstance();
+        db.initiate();
     }
 
     public static void startServer(){
@@ -136,8 +143,6 @@ public class Server {
             }
         }
     }
-
-
 }
 
 

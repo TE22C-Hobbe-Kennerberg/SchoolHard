@@ -1,6 +1,4 @@
-import org.json.JSONArray;
-
-// Gets input from Server and executes functions depending on input.
+// A way for the client to send commands to the server with parameters.
 public class ServerCommand {
     Database db = Database.getInstance();
 
@@ -16,18 +14,18 @@ public class ServerCommand {
     }
 
     // Gets chat between 2 users.
-    public JSONArray getChat(String user1, String user2){
-        //JSONArray data = db.getTable(user1, user2);
-        return new JSONArray();
+    public Chat getChat(String user1, String user2){
+
+        return new Chat();
     }
 
     // Creates a new chat.
-    public void createChat(){
+    public void createChat(String user1, String user2){
 
     }
 
     // Creates a new user.
-    public void createUser(){
+    public void createUser(String username, String password){
 
     }
 }
