@@ -17,9 +17,9 @@ public class Server {
 
         initiateDatabase();
 
-        ServerCommand c = new ServerCommand();
-        Message m = new Message("Hello!", "shobben1", "shobben2");
-        c.sendMessage(m);
+        ServerCommandHelper ch = new ServerCommandHelper();
+        ch.command = ch.new UserExists("");
+
 
         //IncomingConnectionHandler test = IncomingConnectionHandler.getInstance();
         //test.allowConnection();
