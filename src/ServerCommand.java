@@ -18,8 +18,8 @@ public class ServerCommand {
     }
 
     // Gets chat between 2 users. Can return null.
-    public Chat getChat(String user1, String user2){
-        return (Chat) db.search("chats", user1, user2).getFirst();
+    public ArrayList<TableEntry> getChat(String user1, String user2){
+        return db.search("chats", user1, user2);
     }
 
     // Creates a new chat.
@@ -28,10 +28,11 @@ public class ServerCommand {
         if(!db.search("chats", user1, user2).isEmpty()) return;
 
         db.createTable("chats", true);
+        sendMessage(new Message("", user1, user2));
     }
 
-    public void sendChat(String message, String user1, String user2){
-        db.addToTable("chats", message, user1, user2);
+    public void sendMessage(Message message){
+        db.addToTable("chats", message, message.sender, message.receiver);
     }
     // Creates a new user.
     public void createUser(String username, String password){

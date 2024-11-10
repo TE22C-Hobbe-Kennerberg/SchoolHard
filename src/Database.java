@@ -107,7 +107,7 @@ public class Database {
     }
 
     public void sendMessage(String message, String user1, String user2){
-        findTable()
+        Table chat = (Chat) findTable("chats", user1, user2);
     }
     // Stores multiple data entries of type T inside a JSON file.
     protected class Table {

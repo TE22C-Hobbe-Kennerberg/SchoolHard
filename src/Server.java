@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,14 +12,14 @@ import java.util.Random;
 public class Server {
     private static final int PORT = 8989;
 
-    public static void main(String[] args) throws  IOException{
+    public static void main(String[] args) throws IOException{
         //startServer();
 
         initiateDatabase();
 
         ServerCommand c = new ServerCommand();
-        Chat chat = new Chat("Shobben");
-        c.sendChat("Hello!", "Shobben", "Shobben2");
+        Message m = new Message("Hello!", "shobben1", "shobben2");
+        c.sendMessage(m);
 
         //IncomingConnectionHandler test = IncomingConnectionHandler.getInstance();
         //test.allowConnection();
