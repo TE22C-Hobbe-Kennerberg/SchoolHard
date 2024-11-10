@@ -1,5 +1,6 @@
 import java.io.*;
 import java.lang.reflect.Field;
+import java.sql.Array;
 import java.util.*;
 
 
@@ -21,7 +22,7 @@ public class Database {
     // Loads all the tables with data.
     public void initiate(){
         createFolder();
-        createRequiredSchemas();
+        createRequired();
 
         File[] schemaFiles = new File(path).listFiles();
         if(schemaFiles == null) return;
@@ -29,7 +30,6 @@ public class Database {
         for(File schema : schemaFiles){
             String schemaName = schema.getName();
             schemas.put(schemaName, new HashMap<>());
-
 
             // Gets current schema folder.
             File[] tableFiles = new File(path + schemaName + "/").listFiles();
@@ -52,8 +52,10 @@ public class Database {
     private void createFolder(){
         new File(path).mkdir();
     }
-    private void createRequiredSchemas(){
+    private void createRequired(){
         createSchema("users");
+        createTable("users", true);
+
         createSchema("chats");
     }
 
@@ -68,14 +70,45 @@ public class Database {
 
     }
 
-    // Gets all the tables storing the correct type and also contains the ALL keywords.
-    public TableEntry getTable(String schema, String ... keywords){
-        File[] files = new File(path + schema + "/").listFiles();
+    // Gets all the table entries that contains ALL the keywords.
+    public ArrayList<TableEntry> search(String schema, String ... keywords){
+        ArrayList<TableEntry> result = new ArrayList<>();
 
-        return new User("H", "k");
+        // Searches all tables in selected schema.
+        for(Table table : schemas.get(schema).values()){
+             ArrayList<TableEntry> search = table.search(keywords);
+             result.addAll(search);
+        }
+
+        return result;
     }
 
+    // Gets the first table containing matching keywords.
+    private Table findTable(String schema, String ... keywords){
 
+        // Searches all tables in selected schema.
+        for(Table table : schemas.get(schema).values()){
+            ArrayList<TableEntry> search = table.search(keywords);
+            if(!search.isEmpty()) return table;
+        }
+
+        return null;
+    }
+
+    // Adds a table to a schema.
+    public void createTable(String schema, boolean createFile){
+        Table table = new Table(schema, createFile);
+    }
+
+    //Adds something to a table inside a schema that also has the matching keywords.
+    public void addToTable(String schema, TableEntry data, String... keywords){
+        Table table = findTable(schema, keywords);
+        if(table != null) table.add(data);
+    }
+
+    public void sendMessage(String message, String user1, String user2){
+        findTable()
+    }
     // Stores multiple data entries of type T inside a JSON file.
     protected class Table {
         // The file containing all data stored in the table.
@@ -84,16 +117,12 @@ public class Database {
 
         private ArrayList<TableEntry> contents;
 
-
         public Table(String schema, boolean createFile){
             contents = new ArrayList<>();
-
-
             schema = schema + "/";
 
             // REMOVE THIS
             uuid = UUID.fromString("08a20118-4735-4952-a94b-e8974f5c1515");
-
 
             if(createFile){
                 uuid = UUID.randomUUID();
@@ -109,12 +138,11 @@ public class Database {
                         System.out.println("Could not write to file. Please check application permissions.");
                     }
                 }
-                // If the file does exist, load data from the file.
-                else{
-                    initiate();
-                }
             }
-
+            // If the file is already supposed to exist.
+            else{
+                initiate();
+            }
         }
 
         // Loads all data from file.
@@ -163,14 +191,15 @@ public class Database {
             ArrayList<Object> currentVars;
         }
 
-
+        public void add(TableEntry data){
+            contents.add(data);
+        }
         // Searches through the table for any variable matching
         public ArrayList<TableEntry> search(String... keywords){
             ArrayList<TableEntry> result = new ArrayList<>();
-            List<String> keywordList = Arrays.asList(keywords);
+
             // For every item.
             for(TableEntry item : contents){
-
                 // For every keyword there needs to be at least one match.
                 int matchingKeywords = 0;
                 ArrayList<Object> variables = item.getVariables();

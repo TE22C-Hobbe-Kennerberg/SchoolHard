@@ -17,6 +17,11 @@ public class Server {
         //startServer();
 
         initiateDatabase();
+
+        ServerCommand c = new ServerCommand();
+        Chat chat = new Chat("Shobben");
+        c.sendChat("Hello!", "Shobben", "Shobben2");
+
         //IncomingConnectionHandler test = IncomingConnectionHandler.getInstance();
         //test.allowConnection();
 
