@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -13,11 +10,10 @@ public class Server {
     private static final int PORT = 8989;
 
     public static void main(String[] args) throws IOException{
-        //startServer();
-
         initiateDatabase();
+        startServer();
 
-        ServerCommandHelper ch = new ServerCommandHelper();
+        ServerCommand ch = new ServerCommand();
         ch.command = ch.new UserExists("");
 
 
@@ -32,28 +28,10 @@ public class Server {
     }
 
     public static void startServer(){
-
-        Random random = new Random();
         try {
-            System.out.println("Waiting for client connection.");
-            // Listens for new incoming connections.
-            ServerSocket listener = new ServerSocket(PORT);
-            Socket client = listener.accept();
-
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            System.out.println("Connected.");
-            while(true){
-                String receivedData = reader.readLine();
-                if(receivedData.equals("exit")) break;
-            }
-
-            client.close();
-            listener.close();
-        }
-        catch (IOException e){
-            System.out.println("Could not open stream");
-            System.exit(0);
+            IncomingConnectionHandler.allowConnection();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -70,13 +48,14 @@ public class Server {
         }
 
         // All connections.
-        private ArrayList<Connection> connections = new ArrayList<Connection>();
+        static private ArrayList<Connection> connections = new ArrayList<>();
 
         // Waits for a new connection and then adds it to the ArrayList with all connections.
-        public void allowConnection() throws IOException {
+        public static void allowConnection() throws IOException {
             ServerSocket listener = new ServerSocket(PORT);
 
             while(true){
+                System.out.println("Waiting for client connection");
                 connections.add(new Connection(listener.accept()));
             }
         }
@@ -104,18 +83,20 @@ public class Server {
 
             @Override
             public void run() {
-                // Keeps getting input until the connection dies.
+                // Keeps reading commands until the connection dies.
                 while(true){
-                    readInput();
+                    receiveCommand();
                 }
             }
 
 
             // Reads input from client and sends it to be handled.
-            private void readInput(){
+            private void receiveCommand(){
                 try {
-                    // Reads until "final" is read.
-                    String in = input.readLine();
+                    FileHelper fh = new FileHelper();
+
+                    ServerCommand command = (ServerCommand) fh.readObjectFromFile(fh.recieveFile(socket.getInputStream()));
+                    sendResult(command.execute());
 
                 } catch (IOException e) {
                     // If the connection dies.
@@ -123,9 +104,16 @@ public class Server {
                 }
             }
 
-            private void handleInput(){
-
+            private void sendResult(Object result){
+                try {
+                    FileHelper fh = new FileHelper();
+                    File file = new File("./temp.ser");
+                    fh.sendFile(file, socket.getOutputStream());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
+
 
             // Closes the connection and
             private void close(){
@@ -139,18 +127,6 @@ public class Server {
                 ch.deleteConnection(this);
 
             }
-
-
-            // Handles all incoming commands from clients.
-            private void command(String command){
-
-            }
         }
     }
 }
-
-
-// Add sending files to server.
-// Add server/database storing files.
-// Add searching database.
-//

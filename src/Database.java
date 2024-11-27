@@ -1,11 +1,10 @@
 import java.io.*;
 import java.lang.reflect.Field;
-import java.sql.Array;
 import java.util.*;
 
 
 public class Database {
-    private final String path = "./db_data/";
+    private final String databasePath = "./db_data/";
     private final String fileType = ".ser";
 
     private static Database instance;
@@ -24,7 +23,7 @@ public class Database {
         createFolder();
         createRequired();
 
-        File[] schemaFiles = new File(path).listFiles();
+        File[] schemaFiles = new File(databasePath).listFiles();
         if(schemaFiles == null) return;
 
         for(File schema : schemaFiles){
@@ -32,15 +31,16 @@ public class Database {
             schemas.put(schemaName, new HashMap<>());
 
             // Gets current schema folder.
-            File[] tableFiles = new File(path + schemaName + "/").listFiles();
+            File[] tableFiles = new File(databasePath + schemaName + "/").listFiles();
 
             // If the schema folder is empty for some reason.
             if(tableFiles == null) continue;
 
             // For every table file in the current schema folder.
             for(File table : tableFiles){
-                // Creates a new table without and loads the data from file.
-                Table tempTable = new Table(schemaName, false);
+                // Creates a new table with set uuid and loads the data from file.
+                UUID uuid = UUID.fromString(table.getName().substring(0, table.getName().length()-fileType.length()));
+                Table tempTable = new Table(schemaName, uuid);
                 tempTable.initiate();
 
                 schemas.get(schemaName).put(tempTable.uuid, tempTable);
@@ -50,22 +50,21 @@ public class Database {
 
     // Creates the folder for the database data according to path variable.
     private void createFolder(){
-        new File(path).mkdir();
+        new File(databasePath).mkdir();
     }
     private void createRequired(){
         createSchema("users");
-        createTable("users", true);
+        createTable("users");
 
         createSchema("chats");
     }
 
     // Creates a schema if it does not already exist.
     private void createSchema(String name){
-        boolean schemaExists = new File(path + name).mkdir();
+        boolean schemaExists = new File(databasePath + name).mkdir();
 
         if(!schemaExists){
             schemas.put(name, new HashMap<>());
-            System.out.println("1");
         }
 
     }
@@ -96,9 +95,16 @@ public class Database {
     }
 
     // Adds a table to a schema.
-    public void createTable(String schema, boolean createFile){
-        Table table = new Table(schema, createFile);
+    public void createTable(String schema){
+        Table table = new Table(schema);
+        schemas.get(schema).put(table.uuid, table);
     }
+    // Adds a table to a schema with a set UUID.
+    public void createTable(String schema, UUID uuid){
+        Table table = new Table(schema, uuid);
+        schemas.get(schema).put(table.uuid, table);
+    }
+
 
     //Adds something to a table inside a schema that also has the matching keywords.
     public void addToTable(String schema, TableEntry data, String... keywords){
@@ -106,9 +112,11 @@ public class Database {
         if(table != null) table.add(data);
     }
 
-    public void sendMessage(String message, String user1, String user2){
-        Table chat = (Chat) findTable("chats", user1, user2);
+    public void sendMessage(Message message, String user1, String user2){
+        Table table = (Table) findTable("chats", user1, user2);
+        table.add(message);
     }
+
     // Stores multiple data entries of type T inside a JSON file.
     protected class Table {
         // The file containing all data stored in the table.
@@ -117,62 +125,44 @@ public class Database {
 
         private ArrayList<TableEntry> contents;
 
-        public Table(String schema, boolean createFile){
+        public Table(String schema){
+
             contents = new ArrayList<>();
             schema = schema + "/";
 
-            // REMOVE THIS
-            uuid = UUID.fromString("08a20118-4735-4952-a94b-e8974f5c1515");
 
-            if(createFile){
-                uuid = UUID.randomUUID();
-                file = new File(path + schema + uuid + fileType);
-                // If the file does not exist it creates a new empty file with the uuid as name.
-                if(!file.exists()){
-                    try{
-                        FileWriter fileWriter = new FileWriter(file, true);
-                        fileWriter.flush();
-                        fileWriter.close();
-                    }
-                    catch (Exception e){
-                        System.out.println("Could not write to file. Please check application permissions.");
-                    }
-                }
+            uuid = UUID.randomUUID();
+            file = new File(databasePath + schema + uuid + fileType);
+
+            // Create an empty file with the uuid as file name.
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                System.out.println("Could not write to file. Please check application permissions.");
+                System.exit(-1);
             }
-            // If the file is already supposed to exist.
-            else{
-                initiate();
-            }
+        }
+        // Create a table with a set UUID.
+        public Table(String schema, UUID uuid){
+            schema = schema + "/";
+            this.uuid = uuid;
+            file = new File(databasePath + schema + uuid + fileType);
+            initiate();
         }
 
         // Loads all data from file.
         public void initiate(){
-            try {
-                FileInputStream fileInputStream = new FileInputStream(path);
-                ObjectInputStream in = new ObjectInputStream(fileInputStream);
-
-                Table target = (Table) in.readObject();
+            FileHelper fh = new FileHelper();
+            Table target = (Table) fh.readObjectFromFile(file);
+            if(target != null){
                 readVariables(target);
-                in.close();
-                fileInputStream.close();
-            }catch (Exception e){
-                System.out.println("Could not read file. Please check application permissions.");
             }
         }
 
         // Saves all data to a file in the schema.
         public void save(){
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-                ObjectOutputStream out = new ObjectOutputStream(fileOutputStream);
-
-                out.writeObject(this);
-                out.close();
-                fileOutputStream.close();
-            }catch (Exception e){
-                System.out.println("Could not write file. Please fix application permissions.");
-            }
-
+            FileHelper fh = new FileHelper();
+            fh.writeObjectToFile(this, file);
         }
 
         // Reads variables from another table and replaces its own fields with the targets.
@@ -187,8 +177,6 @@ public class Database {
                     // Nothing needs to happen.
                 }
             }
-
-            ArrayList<Object> currentVars;
         }
 
         public void add(TableEntry data){
@@ -213,10 +201,11 @@ public class Database {
                             break keywordloop;
                         }
                     }
-                    // If every keyword has a match add this item to the result.
-                    if(matchingKeywords == variables.size()){
-                        result.add(item);
-                    }
+
+                }
+                // If every keyword has a match add this item to the result.
+                if(matchingKeywords == variables.size()){
+                    result.add(item);
                 }
             }
             return result;
@@ -224,7 +213,3 @@ public class Database {
         }
     }
 }
-
-
-
-

@@ -9,7 +9,7 @@ public class ServerConnection {
     // Singleton pattern
     private static ServerConnection instance;
     private ServerConnection(){}
-
+    private Socket socket;
     public static ServerConnection getInstance() {
         if(instance == null){
             instance = new ServerConnection();
@@ -19,20 +19,8 @@ public class ServerConnection {
 
     public void connect(){
         try{
-            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
+            socket = new Socket(SERVER_IP, SERVER_PORT);
 
-            while(true){
-                Scanner scanner = new Scanner(System.in);
-                String input = scanner.nextLine();
-
-                PrintWriter sender = new PrintWriter(socket.getOutputStream(), true);
-                sender.println(input);
-                if(input.equals("quit")){
-                    break;
-                }
-            }
-
-            socket.close();
         }
         catch(IOException e){
             System.out.println("Could not connect to server. Please restart the program.");
@@ -41,7 +29,30 @@ public class ServerConnection {
 
     }
 
-    public <T> void  sendData(T data) {
-        System.out.println();
+    // Sends a command and returns the result.
+    public Object sendCommand(ServerCommand command){
+        File file = command.serialize();
+        FileHelper fh = new FileHelper();
+        try{
+            fh.sendFile(file, socket.getOutputStream());
+        }
+        catch(Exception e){
+            // Does not have to do anything.
+        }
+        return receiveResult();
     }
+
+    public Object receiveResult(){
+        FileHelper fh = new FileHelper();
+        try {
+            File file = fh.recieveFile(socket.getInputStream());
+            return fh.readObjectFromFile(file);
+        } catch (IOException e) {
+            // Does not have to do anything.
+            return null;
+        }
+    }
+
+
+
 }

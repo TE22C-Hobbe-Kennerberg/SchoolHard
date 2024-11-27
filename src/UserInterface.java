@@ -6,6 +6,8 @@ public final class UserInterface {
     // Singleton pattern.
     private static UserInterface instance;
     private UserInterface() {}
+    private ServerCommand serverCommand;
+
     public static UserInterface getInstance() {
         if (instance == null) {
             instance = new UserInterface();
@@ -16,6 +18,8 @@ public final class UserInterface {
     public void startUI(){
         startMenu();
     }
+
+
     private void startMenu(){
         int choice = userInput("Welcome!", "Login", "Register");
         //System.out.println(choice);
@@ -31,6 +35,7 @@ public final class UserInterface {
     private void loginMenu(){
 
     }
+
     private void registerMenu(){
         String username = userInput("Choose a username: ").toLowerCase();
 
@@ -42,10 +47,6 @@ public final class UserInterface {
         PasswordHelper pw = new PasswordHelper();
         String hashedPassword = pw.getHash(rawPassword);
 
-
-        // Uploads to database
-        DatabaseConnection db = new DatabaseConnection();
-        db.createUser();
 
 
         // Redirects to log-in menu.

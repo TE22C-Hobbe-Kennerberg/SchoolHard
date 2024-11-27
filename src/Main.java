@@ -7,7 +7,24 @@ public class Main {
             public String b = "Hello!";
         }
 
-        System.out.println();
+        System.out.println("Connecting to server");
+        ServerConnection srv = ServerConnection.getInstance();
+        srv.connect();
+
+        System.out.println("1");
+        ServerCommand cmd = new ServerCommand();
+        System.out.println("2");
+
+        cmd.command = cmd.new CreateUser("Shobben", "123");
+        System.out.println("3");
+
+        cmd.send();
+        System.out.println("4");
+
+        cmd.command = cmd.new UserExists("Shobben");
+        System.out.println("User exists: " +  cmd.send());
+
+
 
 
         //PasswordHelper pw = new PasswordHelper();
