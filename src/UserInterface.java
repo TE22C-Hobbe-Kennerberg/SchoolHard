@@ -1,4 +1,3 @@
-import java.security.MessageDigest;
 import java.util.Scanner;
 
 public final class UserInterface {
@@ -6,7 +5,7 @@ public final class UserInterface {
     // Singleton pattern.
     private static UserInterface instance;
     private UserInterface() {}
-    private ServerCommand serverCommand;
+    private ServerCommandManager serverCommand;
 
     public static UserInterface getInstance() {
         if (instance == null) {

@@ -3,7 +3,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 
-public class Database {
+public class Database implements Serializable{
     private final String databasePath = "./db_data/";
     private final String fileType = ".ser";
 

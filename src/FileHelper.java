@@ -12,11 +12,11 @@ public class FileHelper {
             DataOutputStream out = new DataOutputStream(outputStream);
 
             out.writeLong(file.length());
-
+            System.out.println(file.length());
             // Writes until buffer is empty.
             byte[] buffer = new byte[1024];
             while(fileInputStream.read(buffer) != -1){
-                System.out.println("--------SENDING--------");
+                System.out.println("--------SENDING " + file.getName() + " " + file.length() + "--------");
                 System.out.println(Arrays.toString(buffer));
                 System.out.println("-----------------------");
                 out.write(buffer);
@@ -39,7 +39,7 @@ public class FileHelper {
             byte[] buffer = new byte[1024];
             // Reads until size bytes has been read.
             while(size > 0){
-                System.out.println("--------RECIEVED--------");
+                System.out.println("--------RECEIVING "  + file.length() + "--------");
                 System.out.println(Arrays.toString(buffer));
                 System.out.println("------------------------");
                 size -= in.read(buffer);
@@ -63,10 +63,7 @@ public class FileHelper {
 
             out.flush();
             out.close();
-        }catch (NotSerializableException n){
-
         }
-
         catch (Exception e){
             System.out.println("1. Could not write file. Please check application permissions.");
             System.out.println(e);

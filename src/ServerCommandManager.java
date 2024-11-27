@@ -3,36 +3,34 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 // A way for the client to send commands to the server with parameters.
-public class ServerCommand implements Serializable {
+public class ServerCommandManager implements Serializable{
     Database db = Database.getInstance();
     ServerConnection srv = ServerConnection.getInstance();
-    Command command;
 
     // Stores the command
-    public class Command{
+    public class Command implements Serializable{
         public Object runCommand(){
             return new Object();
         }
     }
 
     // Sends the command to the server and returns the result.
-    public Object send(){
+    public Object send(Command command){
         System.out.println("here");
 
-        return srv.sendCommand(this);
+        return srv.sendCommand(command);
     }
 
     // Runs the created command and returns the result.
-    public Object execute(){
+    public Object execute(Command command){
         return command.runCommand();
     }
 
-    // Serializes the command into a file.
-    public File serialize(){
+    // Serializes the command into a temporary file.
+    public File serialize(Command command){
         File file = new File("./temp.ser");
         FileHelper fh = new FileHelper();
-        System.out.println("here1");
-        fh.writeObjectToFile(this, file);
+        fh.writeObjectToFile(command, file);
         return file;
     }
 
@@ -100,7 +98,7 @@ public class ServerCommand implements Serializable {
 
             // Create a table and sends a message so it can be found later.
             db.createTable("chats");
-            ServerCommand.this.new SendMessage(new Message("", user1, user2)).runCommand();
+            ServerCommandManager.this.new SendMessage(new Message("", user1, user2)).runCommand();
             return null;
         }
     }

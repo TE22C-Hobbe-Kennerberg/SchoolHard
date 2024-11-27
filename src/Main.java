@@ -12,17 +12,20 @@ public class Main {
         srv.connect();
 
         System.out.println("1");
-        ServerCommand cmd = new ServerCommand();
+        ServerCommandManager scm = new ServerCommandManager();
+
         System.out.println("2");
+        ServerCommandManager.Command command;
+        command = scm.new CreateUser("Shobben", "123");
 
-        cmd.command = cmd.new CreateUser("Shobben", "123");
         System.out.println("3");
+        scm.send(command);
 
-        cmd.send();
         System.out.println("4");
+        command = scm.new UserExists("Shobben");
 
-        cmd.command = cmd.new UserExists("Shobben");
-        System.out.println("User exists: " +  cmd.send());
+        command = scm.new UserExists("Shobben");
+        System.out.println("User exists: " +  scm.send(command));
 
 
 
