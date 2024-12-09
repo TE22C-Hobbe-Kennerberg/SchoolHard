@@ -1,5 +1,4 @@
 import java.io.*;
-import java.sql.SQLOutput;
 import java.util.Arrays;
 
 public class FileHelper {
@@ -8,18 +7,19 @@ public class FileHelper {
     public void sendFile(File file, OutputStream outputStream){
         System.out.println("Sending file: " + file.getName());
         try {
+            int bytesWritten = 0;
             FileInputStream fileInputStream = new FileInputStream(file);
             DataOutputStream out = new DataOutputStream(outputStream);
 
-            out.writeLong(file.length());
-            System.out.println(file.length());
+            out.writeInt((int)file.length());
             // Writes until buffer is empty.
             byte[] buffer = new byte[1024];
-            while(fileInputStream.read(buffer) != -1){
+            while((bytesWritten = fileInputStream.read(buffer)) != -1){
                 System.out.println("--------SENDING " + file.getName() + " " + file.length() + "--------");
                 System.out.println(Arrays.toString(buffer));
                 System.out.println("-----------------------");
-                out.write(buffer);
+                out.write(buffer, 0, bytesWritten);
+                out.write
             }
             fileInputStream.close();
 
@@ -31,25 +31,31 @@ public class FileHelper {
     // Reads a file from an inputStream in to a new temporary file.
     public File recieveFile(InputStream inputStream){
         try{
-            File file = new File("./temp2.ser");
-            FileOutputStream fileWriter = new FileOutputStream(file);
+            int bytesRead = 0;
+            File file = new File("./receive_temp.ser");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+
             DataInputStream in = new DataInputStream(inputStream);
 
-            long size = in.readLong();
+            int size = in.readInt();
             byte[] buffer = new byte[1024];
             // Reads until size bytes has been read.
             while(size > 0){
-                System.out.println("--------RECEIVING "  + file.length() + "--------");
+                bytesRead = in.read(buffer, 0, Math.min(buffer.length, size));
+                System.out.println("Bytes read: " + bytesRead);
+                size -= bytesRead;
+                fileOutputStream.write(buffer);
+
+                System.out.println("--------RECEIVING "  + size + "--------");
                 System.out.println(Arrays.toString(buffer));
                 System.out.println("------------------------");
-                size -= in.read(buffer);
-                fileWriter.write(buffer);
             }
-            fileWriter.flush();
-            fileWriter.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
             return file;
         }
         catch(Exception e){
+            System.out.println("SOMETHING WRONG");
             return null;
         }
     }

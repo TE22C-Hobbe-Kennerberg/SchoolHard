@@ -5,17 +5,17 @@ import java.util.ArrayList;
 // A way for the client to send commands to the server with parameters.
 public class ServerCommandManager implements Serializable{
     Database db = Database.getInstance();
-    ServerConnection srv = ServerConnection.getInstance();
+    //ServerConnection srv = ServerConnection.getInstance();
 
     // Stores the command
     public class Command implements Serializable{
-        public Object runCommand(){
+        protected Object runCommand(){
             return new Object();
         }
     }
 
     // Sends the command to the server and returns the result.
-    public Object send(Command command){
+    public Object send(Command command, ServerConnection srv){
         System.out.println("here");
 
         return srv.sendCommand(command);
