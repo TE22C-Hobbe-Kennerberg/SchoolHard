@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.Serializable;
 
 public class Main {
@@ -6,6 +7,7 @@ public class Main {
             public int a = 1;
             public String b = "Hello!";
         }
+
 
         System.out.println("Connecting to server");
         ServerConnection srv = ServerConnection.getInstance();
@@ -19,13 +21,13 @@ public class Main {
         command = scm.new CreateUser("Shobben", "123");
 
         System.out.println("3");
-        scm.send(command);
+        scm.send(command, srv);
 
         System.out.println("4");
         command = scm.new UserExists("Shobben");
 
         command = scm.new UserExists("Shobben");
-        System.out.println("User exists: " +  scm.send(command));
+        System.out.println("User exists: " +  scm.send(command, srv));
 
 
 

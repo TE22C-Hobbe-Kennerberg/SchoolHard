@@ -85,14 +85,15 @@ public class Server {
             // Reads input from client and sends it to be handled.
             private void receiveCommand(){
                 try {
-                    FileHelper fh = new FileHelper();
                     // Reads the command into an object.
+                    FileHelper fh = new FileHelper();
                     ServerCommandManager scm = new ServerCommandManager();
                     ServerCommandManager.Command command = (ServerCommandManager.Command) fh.readObjectFromFile(fh.recieveFile(socket.getInputStream()));
 
+
                     // Executes the command and sends the result back to the client.
                     System.out.println("Sending result");
-                    Object result = scm.send(command);
+                    Object result = scm.execute(command);
                     sendResult(result);
 
                 } catch (IOException e) {
